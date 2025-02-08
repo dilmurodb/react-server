@@ -5,6 +5,7 @@ import SearchItem from './SearchItem'
 import AddItem from './AddItem';
 import Content from './Content'
 import Footer from './Footer'
+import apiRequest from './apiRequest';
 
 function App() {
 
@@ -44,16 +45,38 @@ function App() {
 
   }, [])
 
-  const addItem = (item) => {
+  const addItem = async (item) => {
     const id = items.length ? items.length + 1 : 1;
-    const newItemObj = { id: id, checked: false, item: item}
+    const newItemObj = { id: id.toString(), checked: false, item: item}
     const listItems = [...items, newItemObj]
     setItems(listItems)
+
+    const postOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newItemObj)
+    }
+
+    const result = await apiRequest(API_URL, postOptions)
+    if (result) setFetchError(result)
   }
 
-  const handleCheck = (id) => {
+  const handleCheck = async (id) => {
     const listItems = items.map((item) => item.id === id ? { ...item, checked: !item.checked } : item)
     setItems(listItems)
+    const changedItem = listItems.filter(item => item.id === id);
+    const updatedOptions = {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ checked: changedItem[0].checked})
+    }
+    const reqUrl = `${API_URL}/${id}`
+    const result = await apiRequest(reqUrl, updatedOptions)
+    if (result) setFetchError(result)
   }
 
   const handleDelete = (id) => {
