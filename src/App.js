@@ -67,8 +67,7 @@ function App() {
     const listItems = items.map((item) => item.id === id ? { ...item, checked: !item.checked } : item)
     setItems(listItems)
     const changedItem = listItems.filter(item => item.id === id);
-    console.log(typeof id)
-    console.log(changedItem)
+
     const updatedOptions = {
       method: 'PATCH',
       headers: {
