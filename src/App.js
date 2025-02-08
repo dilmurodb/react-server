@@ -67,6 +67,8 @@ function App() {
     const listItems = items.map((item) => item.id === id ? { ...item, checked: !item.checked } : item)
     setItems(listItems)
     const changedItem = listItems.filter(item => item.id === id);
+    console.log(typeof id)
+    console.log(changedItem)
     const updatedOptions = {
       method: 'PATCH',
       headers: {
@@ -79,9 +81,15 @@ function App() {
     if (result) setFetchError(result)
   }
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     const listItems = items.filter((item) => item.id !== id)
     setItems(listItems)
+
+    const deleteOptions = { method: 'DELETE' }
+
+    const reqUrl = `${API_URL}/${id}`
+    const result = await apiRequest(reqUrl, deleteOptions)
+    if (result) setFetchError(result)
   }
 
   const handleSubmit = (e) => {
